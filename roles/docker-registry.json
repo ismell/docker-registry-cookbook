@@ -1,0 +1,17 @@
+{
+  "name": "docker-registry",
+  "description": "Installs the complete docker registry",
+  "json_class": "Chef::Role",
+  "default_attributes": {
+  },
+  "override_attributes": {
+  },
+  "chef_type": "role",
+  "run_list": [
+    "role[docker-registry_application_server]",
+    "role[docker-registry_load_balancer]"
+  ],
+  "env_run_lists": {
+  }
+}
+

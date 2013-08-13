@@ -1,0 +1,16 @@
+{
+  "name": "docker-registry_load_balancer",
+  "description": "Installs an nginx load balancer for the docker registry",
+  "json_class": "Chef::Role",
+  "default_attributes": {
+  },
+  "override_attributes": {
+  },
+  "chef_type": "role",
+  "run_list": [
+    "recipe[docker-registry]"
+  ],
+  "env_run_lists": {
+  }
+}
+

@@ -1,0 +1,16 @@
+{
+  "name": "docker-registry_application_server",
+  "description": "Installs docker registry application",
+  "json_class": "Chef::Role",
+  "default_attributes": {
+  },
+  "override_attributes": {
+  },
+  "chef_type": "role",
+  "run_list": [
+    "recipe[docker-registry]"
+  ],
+  "env_run_lists": {
+  }
+}
+

@@ -18,36 +18,53 @@
 # limitations under the License.
 #
 
-#include_recpie "application_python"
-#include_recpie "application_nginx"
+virtual_env_path = ::File.join(node['docker-registry']['install_dir'], "shared", "env", node['docker-registry']['revision'])
+
+python_virtualenv virtual_env_path do
+  path virtual_env_path
+  owner node['docker-registry']['owner']
+  group node['docker-registry']['group']
+  action :create
+end
 
 application "docker-registry" do
+  owner node['docker-registry']['owner']
+  group node['docker-registry']['group']
   path node['docker-registry']['install_dir']
   repository node['docker-registry']['repository']
   revision node['docker-registry']['revision']
   packages ["libevent-dev", "git"]
-  rollback_on_error false
+  
   action :force_deploy
-
-  environment :SETTINGS_FLAVOR => node['docker-registry']['flavor']
 
   before_restart do
     template "#{new_resource.path}/current/config.yml" do
       source "config.yml.erb"
+      mode 0440
+      owner node['docker-registry']['owner']
+      group node['docker-registry']['group']
     end
   end
 
   gunicorn do
+    only_if { node['roles'].include?('docker-registry_application_server') }
+
     requirements "requirements.txt"
     max_requests node['docker-registry']['max_requests']
     timeout node['docker-registry']['timeout']
-    host "localhost"
     port node['docker-registry']['internal_port']
     workers node['docker-registry']['workers']
     worker_class "gevent"
     app_module "wsgi:application"
+
+    virtualenv virtual_env_path
+
+    environment :SETTINGS_FLAVOR => node['docker-registry']['flavor']
   end
 
-  #nginx_load_balancer do
-  #end
+  nginx_load_balancer do
+    only_if { node['roles'].include?('docker-registry_load_balancer') }
+    application_port node['docker-registry']['internal_port']
+    server_name (node['docker-registry']['server_name'] || node['fqdn'] || node['hostname'])
+  end
 end

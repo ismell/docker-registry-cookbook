@@ -24,7 +24,8 @@ default['docker-registry']['revision'] = "0.5.5"
 
 default['docker-registry']['install_dir'] = "/opt/docker-registry"
 
-default['docker-registry']['user'] = "docker-registry"
+default['docker-registry']['owner'] = "docker-registry"
+default['docker-registry']['group'] = "docker-registry"
 
 default['docker-registry']['internal_port'] = 5000
 default['docker-registry']['workers'] = 8
