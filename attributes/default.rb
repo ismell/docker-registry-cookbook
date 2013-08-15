@@ -2,9 +2,9 @@
 # Cookbook Name:: docker-registry
 # Attributes:: default
 #
-# Author:: Raul E Rangel (<Raul.Rangel@disney.com>)
+# Author:: Raul E Rangel (<Raul.E.Rangel@gmail.com>)
 #
-# Copyright 2009-2011, Disney Interactive
+# Copyright 2013, Raul E Rangel
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.

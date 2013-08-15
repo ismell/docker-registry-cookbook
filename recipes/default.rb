@@ -1,9 +1,9 @@
 #
 # Cookbook Name:: docker-registry
 # Recipe:: default
-# Author:: Raul E Rangel <Raul.Rangel@disney.com>
+# Author:: Raul E Rangel (<Raul.E.Rangel@gmail.com>)
 #
-# Copyright 2008-2012, Opscode, Inc.
+# Copyright 2013, Raul E Rangel
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -55,6 +55,8 @@ if node['docker-registry']['data_bag']
       end
     end
   end
+
+  s3_secret_key = secrets["s3_secret_key"]
 end
 
 application "docker-registry" do
@@ -79,7 +81,7 @@ application "docker-registry" do
         :storage_path => node['docker-registry']['storage_path'],
         #TODO: Come get these from an encrypted databag
         :s3_access_key => node['docker-registry']['s3_access_key'],
-        :s3_secret_key => node['docker-registry']['s3_secret_key'],
+        :s3_secret_key => s3_secret_key,
         :s3_bucket => node['docker-registry']['s3_bucket'],
       })
     end
