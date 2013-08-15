@@ -3,6 +3,13 @@
   "description": "Installs an nginx load balancer for the docker registry",
   "json_class": "Chef::Role",
   "default_attributes": {
+    "nginx": {
+      "install_method": "source",
+      "version": "1.5.3",
+      "source": {
+        "checksum": "edcdf2030750b4eb1ba8cd79365c16a3e33e6136b7fdd8a1a7b4082397f4e92b"
+      }
+    }
   },
   "override_attributes": {
   },
