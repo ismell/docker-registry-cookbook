@@ -1,0 +1,7 @@
+<% @certificates.each do |certificate| -%>
+-----BEGIN CERTIFICATE-----
+<% certificate.scan(/.{1,64}/).each do |chunk| -%>
+<%= chunk %>
+<% end -%>
+-----END CERTIFICATE-----
+<% end %>

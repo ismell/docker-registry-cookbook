@@ -16,12 +16,30 @@ end
   depends cb
 end
 
-#%w{ bluepill }.each do |cb|
-#  suggests cb
-#end
+attribute "docker-registry/repository",
+  :display_name => "Docker Registry Git Repo",
+  :description => "The URL for the Docker Registry Git Repo",
+  :type => "string",
+  :required => "required",
+  :default => "https://github.com/dotcloud/docker-registry.git"
 
-attribute "registry/flavor",
-  :display_name => "Flavor",
-  :description => "Flavor to run common, dev, prod",
-  :default => "dev"
+attribute "docker-registry/revision",
+  :display_name => "Docker Registry Revision",
+  :description => "The revision to check out from the repository",
+  :type => "string",
+  :required => "required"
 
+attribute "docker-registry/install_dir",
+  :display_name => "Docker Registry Install Directory",
+  :description => "The directory to install Docker Registry",
+  :type => "string",
+  :required => "required",
+  :default => "/opt/docker-registry"
+
+#TODO: Fill in the rest... for some reason?
+
+attribute "docker-registry/data_bag",
+  :display_name => "Data Bag containing secrets",
+  :description => "The data bag that contains environment files with ssl and s3 keys",
+  :type => "string",
+  :required => "recommended"
