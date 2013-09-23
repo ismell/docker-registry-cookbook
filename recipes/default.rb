@@ -65,7 +65,7 @@ application "docker-registry" do
   path node['docker-registry']['install_dir']
   repository node['docker-registry']['repository']
   revision node['docker-registry']['revision']
-  packages ["libevent-dev", "git"]
+  packages node['docker-registry']['packages']
 
   action :force_deploy
   symlinks "config.yml" => "config.yml"
