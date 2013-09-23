@@ -12,9 +12,11 @@ recipe "docker-registry", "Installs the docker-registry and sets up configuratio
   supports os
 end
 
-%w{ application_nginx application_python}.each do |cb|
+%w{ application_nginx application_python }.each do |cb|
   depends cb
 end
+
+depends 'application', '>= 3.0.0'
 
 attribute "docker-registry/repository",
   :display_name => "Docker Registry Git Repo",

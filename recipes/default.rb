@@ -18,6 +18,20 @@
 # limitations under the License.
 #
 
+group node['docker-registry']['group'] do
+  only_if { node['docker-registry']['create_user_and_group'] }
+
+  gid node['docker-registry']['gid']
+end
+
+user node['docker-registry']['owner'] do
+  only_if { node['docker-registry']['create_user_and_group'] }
+
+  gid node['docker-registry']['group']
+  home node['docker-registry']['install_dir']
+  shell '/bin/bash'
+end
+
 directory node['docker-registry']['storage_path'] do
   mode 0770
   owner node['docker-registry']['owner']
@@ -25,6 +39,8 @@ directory node['docker-registry']['storage_path'] do
 end
 
 if node['docker-registry']['data_bag']
+  raise 'Solo mode not supported with "data_bag" attribute' if Chef::Config[:solo]
+
   secrets = Chef::EncryptedDataBagItem.load(node['docker-registry']['data_bag'], node.chef_environment)
 
   if node['roles'].include?('docker-registry_load_balancer') and node['docker-registry']['ssl']
@@ -57,6 +73,10 @@ if node['docker-registry']['data_bag']
   end
 
   s3_secret_key = secrets["s3_secret_key"]
+else
+  certificate_path = node['docker-registry']['certificate_path']
+  certificate_key_path = node['docker-registry']['certificate_key_path']
+  s3_secret_key = node['docker-registry']['s3_secret_key']
 end
 
 application "docker-registry" do
@@ -65,7 +85,7 @@ application "docker-registry" do
   path node['docker-registry']['install_dir']
   repository node['docker-registry']['repository']
   revision node['docker-registry']['revision']
-  packages ["libevent-dev", "git"]
+  packages node['docker-registry']['packages']
 
   action :force_deploy
   symlinks "config.yml" => "config.yml"
@@ -88,7 +108,10 @@ application "docker-registry" do
   end
 
   gunicorn do
-    only_if { node['roles'].include?('docker-registry_application_server') }
+    only_if do
+      node['docker-registry']['gunicorn_enabled'] ||
+        (Chef::Config[:solo] && node['roles'].include?('docker-registry_application_server'))
+    end
 
     requirements "requirements.txt"
     max_requests node['docker-registry']['max_requests']
@@ -102,14 +125,17 @@ application "docker-registry" do
   end
 
   nginx_load_balancer do
-    only_if { node['roles'].include?('docker-registry_load_balancer') }
-    
+    only_if do
+      node['docker-registry']['nginx_enabled'] ||
+        (Chef::Config[:solo] && node['roles'].include?('docker-registry_load_balancer'))
+    end
+
     application_port node['docker-registry']['internal_port']
-    server_name (node['docker-registry']['server_name'] || node['fqdn'] || node['hostname'])
+    application_server_role node['docker-registry']['application_server_role']
+    server_name(node['docker-registry']['server_name'] || node['fqdn'] || node['hostname'])
     template "load_balancer.conf.erb"
     ssl node['docker-registry']['ssl']
     ssl_certificate certificate_path
     ssl_certificate_key certificate_key_path
   end
-
 end
