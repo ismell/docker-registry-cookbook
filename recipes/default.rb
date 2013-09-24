@@ -108,9 +108,7 @@ application "docker-registry" do
   end
 
   gunicorn do
-    only_if do
-      node['roles'].include?('docker-registry_application_server')
-    end
+    only_if { node['roles'].include?('docker-registry_application_server') }
 
     requirements "requirements.txt"
     max_requests node['docker-registry']['max_requests']
@@ -124,13 +122,11 @@ application "docker-registry" do
   end
 
   nginx_load_balancer do
-    only_if do
-      node['roles'].include?('docker-registry_load_balancer')
-    end
-
+    only_if { node['roles'].include?('docker-registry_load_balancer') }
+    
     application_port node['docker-registry']['internal_port']
     application_server_role node['docker-registry']['application_server_role']
-    server_name(node['docker-registry']['server_name'] || node['fqdn'] || node['hostname'])
+    server_name (node['docker-registry']['server_name'] || node['fqdn'] || node['hostname'])
     template "load_balancer.conf.erb"
     ssl node['docker-registry']['ssl']
     ssl_certificate certificate_path
