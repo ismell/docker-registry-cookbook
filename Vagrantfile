@@ -39,9 +39,6 @@ Vagrant.configure("2") do |config|
   # View the documentation for the provider you're using for more
   # information on available options.
 
-  config.ssh.max_tries = 40
-  config.ssh.timeout   = 120
-
   # The path to the Berksfile to use with Vagrant Berkshelf
   # config.berkshelf.berksfile_path = "./Berksfile"
 
@@ -67,16 +64,21 @@ Vagrant.configure("2") do |config|
   EOF
   config.vm.provision :chef_solo do |chef|
     chef.log_level = ENV['DEBUG'] ? :debug : :info
+	
+	chef.roles_path = "roles"
+	chef.add_role("docker-registry_application_server")
+	chef.add_role("docker-registry_load_balancer")
+	chef.add_role("docker-registry")
+	
     chef.json = {
       'docker-registry' => {
         'owner' => 'dockreg',
         'group' => 'dockreg',
-        'create_user_and_group' => true,
-        'gunicorn_enabled' => true
+        'create_user_and_group' => true
       }
     }
     chef.run_list = [
-      "recipe[docker-registry::default]"
+      "role[docker-registry_application_server]"
     ]
   end
 end

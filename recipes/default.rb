@@ -109,8 +109,7 @@ application "docker-registry" do
 
   gunicorn do
     only_if do
-      node['docker-registry']['gunicorn_enabled'] ||
-        (Chef::Config[:solo] && node['roles'].include?('docker-registry_application_server'))
+      node['roles'].include?('docker-registry_application_server')
     end
 
     requirements "requirements.txt"
@@ -126,8 +125,7 @@ application "docker-registry" do
 
   nginx_load_balancer do
     only_if do
-      node['docker-registry']['nginx_enabled'] ||
-        (Chef::Config[:solo] && node['roles'].include?('docker-registry_load_balancer'))
+      node['roles'].include?('docker-registry_load_balancer')
     end
 
     application_port node['docker-registry']['internal_port']

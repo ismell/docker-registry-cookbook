@@ -26,10 +26,8 @@ default['docker-registry']['install_dir'] = "/opt/docker-registry"
 
 default['docker-registry']['owner'] = "docker-registry"
 default['docker-registry']['group'] = "docker-registry"
-default['docker-registry']['gid'] = 1566
-default['docker-registry']['create_user_and_group'] = false
+default['docker-registry']['create_user_and_group'] = true
 
-default['docker-registry']['gunicorn_enabled'] = false
 default['docker-registry']['internal_port'] = 5000
 default['docker-registry']['workers'] = 8
 default['docker-registry']['max_requests'] = 100
@@ -40,10 +38,11 @@ default['docker-registry']['flavor'] = 'dev'
 default['docker-registry']['storage'] = 'local'
 default['docker-registry']['storage_path'] = '/var/lib/docker-registry'
 
-default['docker-registry']['nginx_enabled'] = false
-default['docker-registry']['certificate_path'] = nil
-default['docker-registry']['certificate_key_path'] = nil
 default['docker-registry']['ssl'] = false
 default['docker-registry']['ssl_path'] = '/etc/ssl'
+
+default['docker-registry']['certificate_path'] = nil
+default['docker-registry']['certificate_key_path'] = nil
+
 default['docker-registry']['server_name'] = nil
 default['docker-registry']['application_server_role'] = 'docker-registry_application_server'
