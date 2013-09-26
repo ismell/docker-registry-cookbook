@@ -28,10 +28,10 @@ See `attributes/default.rb` for default values.
 * `node["docker-registry"]["storage"]` - Defines the type of storage to use, local or s3.
 * `node["docker-registry"]["ssl"]` - If ssl should be enabled.
 * `node["docker-registry"]["server_name"]` - The FQDN that NGiNX will proxy for.
-* `node["docker-registry"]["data_bag"]` - Name of data bag containing encrypted secrets
-* `node["docker-registry"]["s3_access_key"]` - Your S3 Access Key
-* `node["docker-registry"]["s3_bucket"]` - Your S3 storage bucket
-
+* `node["docker-registry"]["data_bag"]` - Name of data bag containing encrypted secrets.
+* `node["docker-registry"]["s3_access_key"]` - Your S3 Access Key.
+* `node["docker-registry"]["s3_bucket"]` - Your S3 storage bucket.
+* `node["docker-registry"]["secret_key"]` - A 64 character random string. This is used to secure the session cookie. It is recommended to store this in the encrypted data bag.
 
 Data Bag
 ==========
@@ -41,6 +41,7 @@ To enable SSL or use S3 as a storage backend a data bag must be created to store
     $ knife data bag show BAG_NAME ENVIRONMENT --secret-file=my-secret-file
     {
       "id": "ENVIRONMENT",
+      "secret_key": "...",
       "ssl_certificate": [
         "....", # SSL Certificate Chain
         "....",

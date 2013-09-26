@@ -3,10 +3,16 @@
 common:
     storage: <%= @storage %>
     storage_path: <%= @storage_path %>
+    secret_key: <%= @secret_key %>
     <% if @storage == "s3" -%>
     s3_access_key: <%= @s3_access_key %>
     s3_secret_key: <%= @s3_secret_key %>
     s3_bucket: <%= @s3_bucket %>
+    <% end %>
+
+    standalone: <%= @standalone %>
+    <% unless @standalone %>
+    index_endpoint: <%= @index_endpoint %>
     <% end %>
 
 # This is the default configuration when no flavor is specified
@@ -14,15 +20,4 @@ dev:
     loglevel: debug
 
 prod:
-    # The standalone option allows to dedicate authentication and namespacing
-    # to the main Index (https://index.docker.io). Enabling standalone (default)
-    # also disables authentication
-    standalone: False
-
-    # Enabling this options makes the Registry send an email on each code Exception
-    email_exceptions:
-        smtp_host: REPLACEME
-        smtp_login: REPLACEME
-        smtp_password: REPLACEME
-        from_addr: docker-registry@localdomain.local
-        to_addr: noise+dockerregistry@localdomain.local
+    loglevel: warn

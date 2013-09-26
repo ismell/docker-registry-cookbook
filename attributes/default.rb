@@ -20,7 +20,7 @@
 #
 
 default['docker-registry']['repository'] = "https://github.com/dotcloud/docker-registry.git"
-default['docker-registry']['revision'] = "0.5.6"
+default['docker-registry']['revision'] = "0.6.0"
 
 default['docker-registry']['install_dir'] = "/opt/docker-registry"
 
@@ -35,6 +35,10 @@ default['docker-registry']['timeout'] = 3600
 default['docker-registry']['packages'] = %w(libevent-dev git)
 
 default['docker-registry']['flavor'] = 'dev'
+default['docker-registry']['secret_key'] = nil
+
+default['docker-registry']['standalone'] = true
+default['docker-registry']['index_endpoint'] = 'https://index.docker.io'
 
 default['docker-registry']['storage'] = 'local'
 default['docker-registry']['storage_path'] = '/var/lib/docker-registry'

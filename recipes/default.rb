@@ -42,7 +42,7 @@ if node['docker-registry']['data_bag']
   raise 'Solo mode not supported with "data_bag" attribute' if Chef::Config[:solo]
 
   secrets = Chef::EncryptedDataBagItem.load(node['docker-registry']['data_bag'], node.chef_environment)
-
+  
   if node['roles'].include?('docker-registry_load_balancer') and node['docker-registry']['ssl']
     if secrets["ssl_certificate"] and secrets["ssl_certificate_key"]
 
@@ -73,11 +73,17 @@ if node['docker-registry']['data_bag']
   end
 
   s3_secret_key = secrets["s3_secret_key"]
+  secret_key = secrets["secret_key"]
 else
   certificate_path = node['docker-registry']['certificate_path']
   certificate_key_path = node['docker-registry']['certificate_key_path']
   s3_secret_key = node['docker-registry']['s3_secret_key']
 end
+
+# If we didn't get it from the data bag, we get it from the node
+secret_key ||= node['docker-registry']['secret_key']
+
+raise ArgumentError, "secret_key is not defined" unless secret_key
 
 application "docker-registry" do
   owner node['docker-registry']['owner']
@@ -97,9 +103,11 @@ application "docker-registry" do
       owner node['docker-registry']['owner']
       group node['docker-registry']['group']
       variables({
+		:secret_key => secret_key,
         :storage => node['docker-registry']['storage'],
         :storage_path => node['docker-registry']['storage_path'],
-        #TODO: Come get these from an encrypted databag
+        :standalone => node['docker-registry']['standalone'],
+		:index_endpoint => node['docker-registry']['index_endpoint'],
         :s3_access_key => node['docker-registry']['s3_access_key'],
         :s3_secret_key => s3_secret_key,
         :s3_bucket => node['docker-registry']['s3_bucket'],

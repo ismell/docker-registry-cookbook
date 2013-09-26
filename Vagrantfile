@@ -40,7 +40,7 @@ Vagrant.configure("2") do |config|
       'docker-registry' => {
         'owner' => 'dockreg',
         'group' => 'dockreg',
-        'create_user_and_group' => true
+        'secret_key' => 'fksldjriohl2kfsn2lh342kjfdeaslhkhfskjnhalknfk4232snfkldjfsdf3242'
       }
     }
     chef.run_list = [
