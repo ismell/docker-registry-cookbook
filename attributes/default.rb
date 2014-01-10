@@ -20,7 +20,7 @@
 #
 
 default['docker-registry']['repository'] = "https://github.com/dotcloud/docker-registry.git"
-default['docker-registry']['revision'] = "0.6.0"
+default['docker-registry']['revision'] = "0.6.3"
 
 default['docker-registry']['install_dir'] = "/opt/docker-registry"
 
