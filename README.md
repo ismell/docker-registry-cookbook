@@ -81,7 +81,7 @@ License and Author
 
 Author:: Raul E Rangel (<Raul.E.Rangel@gmail.com>)
 
-Copyright 2013, Raul E Rangel.
+Copyright 2014, Raul E Rangel.
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
