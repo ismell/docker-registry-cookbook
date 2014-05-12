@@ -85,6 +85,15 @@ secret_key ||= node['docker-registry']['secret_key']
 
 raise ArgumentError, "secret_key is not defined" unless secret_key
 
+# Make sure we create the env directory before gunicorn
+[node['docker-registry']['install_dir'], ::File.join(node['docker-registry']['install_dir'], "env")].each do |path|
+  directory path do
+    owner node['docker-registry']['owner']
+    group node['docker-registry']['group']
+    mode 00755
+  end
+end
+
 application "docker-registry" do
   owner node['docker-registry']['owner']
   group node['docker-registry']['group']
@@ -93,8 +102,10 @@ application "docker-registry" do
   revision node['docker-registry']['revision']
   packages node['docker-registry']['packages']
 
+  shallow_clone false
+
   action :force_deploy
-  symlinks "config.yml" => "config.yml"
+  symlinks "config.yml" => "config/config.yml"
 
   before_migrate do
     template "#{new_resource.path}/shared/config.yml" do
@@ -103,11 +114,11 @@ application "docker-registry" do
       owner node['docker-registry']['owner']
       group node['docker-registry']['group']
       variables({
-		:secret_key => secret_key,
+		    :secret_key => secret_key,
         :storage => node['docker-registry']['storage'],
         :storage_path => node['docker-registry']['storage_path'],
         :standalone => node['docker-registry']['standalone'],
-		:index_endpoint => node['docker-registry']['index_endpoint'],
+		    :index_endpoint => node['docker-registry']['index_endpoint'],
         :s3_access_key => node['docker-registry']['s3_access_key'],
         :s3_secret_key => s3_secret_key,
         :s3_bucket => node['docker-registry']['s3_bucket'],
@@ -116,7 +127,7 @@ application "docker-registry" do
   end
 
   gunicorn do
-    only_if { node['roles'].include?('docker-registry_application_server') }
+    only_if { node['docker-registry']['application_server'] }
 
     requirements "requirements.txt"
     max_requests node['docker-registry']['max_requests']
@@ -130,7 +141,7 @@ application "docker-registry" do
   end
 
   nginx_load_balancer do
-    only_if { node['roles'].include?('docker-registry_load_balancer') }
+    only_if { node['docker-registry']['load_balancer'] }
     
     application_port node['docker-registry']['internal_port']
     application_server_role node['docker-registry']['application_server_role']

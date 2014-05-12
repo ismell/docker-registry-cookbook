@@ -15,7 +15,7 @@
   },
   "chef_type": "role",
   "run_list": [
-    "recipe[docker-registry]"
+    "recipe[docker-registry::load_balancer]"
   ],
   "env_run_lists": {
   }
