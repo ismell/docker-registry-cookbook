@@ -127,7 +127,7 @@ application "docker-registry" do
   end
 
   gunicorn do
-    only_if { node['roles'].include?('docker-registry_application_server') }
+    only_if { node['docker-registry']['application_server'] }
 
     requirements "requirements.txt"
     max_requests node['docker-registry']['max_requests']
@@ -141,7 +141,7 @@ application "docker-registry" do
   end
 
   nginx_load_balancer do
-    only_if { node['roles'].include?('docker-registry_load_balancer') }
+    only_if { node['docker-registry']['load_balancer'] }
     
     application_port node['docker-registry']['internal_port']
     application_server_role node['docker-registry']['application_server_role']
