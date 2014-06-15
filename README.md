@@ -18,6 +18,8 @@ Platform
 --------
 
 * Ubuntu
+* SmartOS
+* CentOS (Requires supervisor cookbook >= 0.4.11)
 
 Attributes
 ==========

@@ -32,7 +32,6 @@ default['docker-registry']['internal_port'] = 5000
 default['docker-registry']['workers'] = 8
 default['docker-registry']['max_requests'] = 100
 default['docker-registry']['timeout'] = 3600
-default['docker-registry']['packages'] = %w(libevent-dev git libffi-dev liblzma-dev)
 
 default['docker-registry']['flavor'] = 'dev'
 default['docker-registry']['secret_key'] = nil
@@ -53,6 +52,15 @@ default['docker-registry']['server_name'] = nil
 default['docker-registry']['application_server_role'] = 'docker-registry_application_server'
 
 case node['platform']
-when 'smartos'
-  default['docker-registry']['packages'] = %w(libevent scmgit)
+  when 'ubuntu'
+    default['docker-registry']['packages'] = %w(libevent-dev git libffi-dev liblzma-dev)
+    if node['platform_version'].to_f >= 14.04
+      # Ubuntu 14.04 needs gcc to install some py deps
+      default['docker-registry']['packages'] << 'libssl-dev'
+      default['docker-registry']['packages'] << 'gcc'
+    end
+  when 'centos'
+    default['docker-registry']['packages'] = %w(libevent git libffi)
+  when 'smartos'
+    default['docker-registry']['packages'] = %w(libevent scmgit)
 end
