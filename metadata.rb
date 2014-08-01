@@ -3,7 +3,7 @@ maintainer        "Raul E Rangel"
 maintainer_email  "Raul.Rangel@Disney.com.com"
 license           "Apache 2.0"
 description       "Installs and configures docker-registry"
-version           "0.0.5"
+version           "0.0.6"
 
 recipe "docker-registry", "Installs the docker-registry and sets up configuration"
 
