@@ -42,7 +42,7 @@ if node['docker-registry']['data_bag']
   raise 'Solo mode not supported with "data_bag" attribute' if Chef::Config[:solo]
 
   secrets = Chef::EncryptedDataBagItem.load(node['docker-registry']['data_bag'], node.chef_environment)
-  
+
   if node['roles'].include?('docker-registry_load_balancer') and node['docker-registry']['ssl']
     if secrets["ssl_certificate"] and secrets["ssl_certificate_key"]
 
@@ -129,7 +129,9 @@ application "docker-registry" do
   gunicorn do
     only_if { node['docker-registry']['application_server'] }
 
-    requirements "requirements.txt"
+    packages [
+      '/docker-registry/depends/docker-registry-core'
+    ]
     max_requests node['docker-registry']['max_requests']
     timeout node['docker-registry']['timeout']
     port node['docker-registry']['internal_port']
@@ -142,7 +144,7 @@ application "docker-registry" do
 
   nginx_load_balancer do
     only_if { node['docker-registry']['load_balancer'] }
-    
+
     application_port node['docker-registry']['internal_port']
     application_server_role node['docker-registry']['application_server_role']
     server_name (node['docker-registry']['server_name'] || node['fqdn'] || node['hostname'])
