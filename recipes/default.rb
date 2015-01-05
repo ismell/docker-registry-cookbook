@@ -108,6 +108,7 @@ application "docker-registry" do
   symlinks "config.yml" => "config/config.yml"
 
   before_migrate do
+
     template "#{new_resource.path}/shared/config.yml" do
       source "config.yml.erb"
       mode 0440
@@ -124,6 +125,38 @@ application "docker-registry" do
         :s3_bucket => node['docker-registry']['s3_bucket'],
       })
     end
+
+    #docker-registry
+    #boto
+    #redis
+    #setuptools
+    #simplejson
+
+    python_pip node['docker-registry']['install_dir'] + '/current/docker_registry' do
+      virtualenv ::File.join(node['docker-registry']['install_dir'], "env", node['docker-registry']['revision'])
+      action :upgrade
+    end
+
+    python_pip 'boto' do
+      virtualenv ::File.join(node['docker-registry']['install_dir'], "env", node['docker-registry']['revision'])
+      action :upgrade
+    end
+
+    python_pip 'redis' do
+      virtualenv ::File.join(node['docker-registry']['install_dir'], "env", node['docker-registry']['revision'])
+      action :upgrade
+    end
+
+    python_pip 'setuptools' do
+      virtualenv ::File.join(node['docker-registry']['install_dir'], "env", node['docker-registry']['revision'])
+      action :upgrade
+    end
+
+    python_pip 'simplejson' do
+      virtualenv ::File.join(node['docker-registry']['install_dir'], "env", node['docker-registry']['revision'])
+      action :upgrade
+    end
+
   end
 
   gunicorn do
