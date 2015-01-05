@@ -129,6 +129,7 @@ application "docker-registry" do
     for package in [
       node['docker-registry']['install_dir'] + '/current/depends/docker-registry-core',
       node['docker-registry']['install_dir'],
+      'file://' + node['docker-registry']['install_dir'] + '#egg=docker-registry[bugsnag,newrelic,cors]'
     ] do
 
       python_pip "#{package}" do
