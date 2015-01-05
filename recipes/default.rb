@@ -157,6 +157,11 @@ application "docker-registry" do
       action :upgrade
     end
 
+    python_pip 'gevent' do
+      virtualenv ::File.join(node['docker-registry']['install_dir'], "env", node['docker-registry']['revision'])
+      action :upgrade
+    end
+
   end
 
   gunicorn do
