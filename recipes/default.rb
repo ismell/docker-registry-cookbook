@@ -126,40 +126,20 @@ application "docker-registry" do
       })
     end
 
-    #docker-registry
-    #boto
-    #redis
-    #setuptools
-    #simplejson
+    for package in [
+      node['docker-registry']['install_dir'] + '/current/depends/docker-registry-core',
+      'boto',
+      'redis',
+      'setuptools',
+      'simplejson',
+      'gevent'
+    ] do
 
-    python_pip node['docker-registry']['install_dir'] + '/current/docker_registry' do
-      virtualenv ::File.join(node['docker-registry']['install_dir'], "env", node['docker-registry']['revision'])
-      action :upgrade
-    end
+      python_pip "#{package}" do
+        virtualenv ::File.join(node['docker-registry']['install_dir'], "env", node['docker-registry']['revision'])
+        action :upgrade
+      end
 
-    python_pip 'boto' do
-      virtualenv ::File.join(node['docker-registry']['install_dir'], "env", node['docker-registry']['revision'])
-      action :upgrade
-    end
-
-    python_pip 'redis' do
-      virtualenv ::File.join(node['docker-registry']['install_dir'], "env", node['docker-registry']['revision'])
-      action :upgrade
-    end
-
-    python_pip 'setuptools' do
-      virtualenv ::File.join(node['docker-registry']['install_dir'], "env", node['docker-registry']['revision'])
-      action :upgrade
-    end
-
-    python_pip 'simplejson' do
-      virtualenv ::File.join(node['docker-registry']['install_dir'], "env", node['docker-registry']['revision'])
-      action :upgrade
-    end
-
-    python_pip 'gevent' do
-      virtualenv ::File.join(node['docker-registry']['install_dir'], "env", node['docker-registry']['revision'])
-      action :upgrade
     end
 
   end
