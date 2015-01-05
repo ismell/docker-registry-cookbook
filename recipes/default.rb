@@ -126,21 +126,21 @@ application "docker-registry" do
       })
     end
 
-    for package in [
-      node['docker-registry']['install_dir'] + '/current/depends/docker-registry-core',
-      'boto',
-      'redis',
-      'setuptools',
-      'simplejson',
-      'gevent'
-    ] do
+    #for package in [
+    #  node['docker-registry']['install_dir'] + '/current/depends/docker-registry-core',
+    #  'boto',
+    #  'redis',
+    #  'setuptools',
+    #  'simplejson',
+    #  'gevent'
+    #] do
 
-      python_pip "#{package}" do
-        virtualenv ::File.join(node['docker-registry']['install_dir'], "env", node['docker-registry']['revision'])
-        action :upgrade
-      end
+    #  python_pip "#{package}" do
+    #    virtualenv ::File.join(node['docker-registry']['install_dir'], "env", node['docker-registry']['revision'])
+    #    action :upgrade
+    #  end
 
-    end
+    #end
 
   end
 
@@ -153,6 +153,7 @@ application "docker-registry" do
     workers node['docker-registry']['workers']
     worker_class "gevent"
     app_module "wsgi:application"
+    requirements "requirements/main.txt"
     virtualenv ::File.join(node['docker-registry']['install_dir'], "env", node['docker-registry']['revision'])
     environment :SETTINGS_FLAVOR => node['docker-registry']['flavor']
   end
