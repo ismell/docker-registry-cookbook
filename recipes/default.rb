@@ -129,9 +129,6 @@ application "docker-registry" do
   gunicorn do
     only_if { node['docker-registry']['application_server'] }
 
-    packages [
-      '/docker-registry/depends/docker-registry-core'
-    ]
     max_requests node['docker-registry']['max_requests']
     timeout node['docker-registry']['timeout']
     port node['docker-registry']['internal_port']
