@@ -1,6 +1,6 @@
 # The `common' part is automatically included (and possibly overriden by all
 # other flavors)
-common:
+common: &common
     storage: <%= @storage %>
     storage_path: <%= @storage_path %>
     secret_key: <%= @secret_key %>
@@ -10,7 +10,6 @@ common:
     s3_bucket: <%= @s3_bucket %>
     boto_bucket: <%= @s3_bucket %>
     <% end %>
-
     standalone: <%= @standalone %>
     <% unless @standalone %>
     index_endpoint: <%= @index_endpoint %>
@@ -18,7 +17,9 @@ common:
 
 # This is the default configuration when no flavor is specified
 dev:
+    <<: *common
     loglevel: debug
 
 prod:
+    <<: *common
     loglevel: warn

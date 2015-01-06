@@ -42,7 +42,7 @@ if node['docker-registry']['data_bag']
   raise 'Solo mode not supported with "data_bag" attribute' if Chef::Config[:solo]
 
   secrets = Chef::EncryptedDataBagItem.load(node['docker-registry']['data_bag'], node.chef_environment)
-  
+
   if node['roles'].include?('docker-registry_load_balancer') and node['docker-registry']['ssl']
     if secrets["ssl_certificate"] and secrets["ssl_certificate_key"]
 
@@ -108,6 +108,7 @@ application "docker-registry" do
   symlinks "config.yml" => "config/config.yml"
 
   before_migrate do
+
     template "#{new_resource.path}/shared/config.yml" do
       source "config.yml.erb"
       mode 0440
@@ -124,25 +125,39 @@ application "docker-registry" do
         :s3_bucket => node['docker-registry']['s3_bucket'],
       })
     end
+
+    for package in [
+      node['docker-registry']['install_dir'] + '/current/depends/docker-registry-core',
+      node['docker-registry']['install_dir'] + '/current',
+      'file://' + node['docker-registry']['install_dir'] + '/current#egg=docker-registry[bugsnag,newrelic,cors]'
+    ] do
+
+      python_pip "#{package}" do
+        virtualenv ::File.join(node['docker-registry']['install_dir'], "env", node['docker-registry']['revision'])
+        action :upgrade
+      end
+
+    end
+
   end
 
   gunicorn do
     only_if { node['docker-registry']['application_server'] }
 
-    requirements "requirements.txt"
     max_requests node['docker-registry']['max_requests']
     timeout node['docker-registry']['timeout']
     port node['docker-registry']['internal_port']
     workers node['docker-registry']['workers']
     worker_class "gevent"
-    app_module "wsgi:application"
+    app_module "docker_registry.wsgi:application"
+    requirements "requirements/main.txt"
     virtualenv ::File.join(node['docker-registry']['install_dir'], "env", node['docker-registry']['revision'])
     environment :SETTINGS_FLAVOR => node['docker-registry']['flavor']
   end
 
   nginx_load_balancer do
     only_if { node['docker-registry']['load_balancer'] }
-    
+
     application_port node['docker-registry']['internal_port']
     application_server_role node['docker-registry']['application_server_role']
     server_name (node['docker-registry']['server_name'] || node['fqdn'] || node['hostname'])

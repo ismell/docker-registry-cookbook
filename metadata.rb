@@ -3,11 +3,11 @@ maintainer        "Raul E Rangel"
 maintainer_email  "Raul.Rangel@Disney.com.com"
 license           "Apache 2.0"
 description       "Installs and configures docker-registry"
-version           "0.0.6"
+version           "0.1.6"
 
 recipe "docker-registry", "Installs the docker-registry and sets up configuration"
 
-# TODO: debian centos redhat amazon scientific oracle fedora 
+# TODO: debian centos redhat amazon scientific oracle fedora
 %w{ ubuntu smartos }.each do |os|
   supports os
 end
@@ -17,6 +17,7 @@ end
 end
 
 depends 'application', '>= 3.0.0'
+depends 'python'
 
 attribute "docker-registry/repository",
   :display_name => "Docker Registry Git Repo",
