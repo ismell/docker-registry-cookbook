@@ -149,7 +149,7 @@ application "docker-registry" do
     port node['docker-registry']['internal_port']
     workers node['docker-registry']['workers']
     worker_class "gevent"
-    app_module "wsgi:application"
+    app_module "docker_registry.wsgi:application"
     requirements "requirements/main.txt"
     virtualenv ::File.join(node['docker-registry']['install_dir'], "env", node['docker-registry']['revision'])
     environment :SETTINGS_FLAVOR => node['docker-registry']['flavor']
