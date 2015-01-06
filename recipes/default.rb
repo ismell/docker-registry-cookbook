@@ -128,7 +128,7 @@ application "docker-registry" do
 
     for package in [
       node['docker-registry']['install_dir'] + '/current/depends/docker-registry-core',
-      node['docker-registry']['install_dir'],
+      node['docker-registry']['install_dir'] + '/current',
       'file://' + node['docker-registry']['install_dir'] + '/current#egg=docker-registry[bugsnag,newrelic,cors]'
     ] do
 
