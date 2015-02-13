@@ -42,8 +42,8 @@ if node['docker-registry']['data_bag']
   raise 'Solo mode not supported with "data_bag" attribute' if Chef::Config[:solo]
 
   secrets = Chef::EncryptedDataBagItem.load(node['docker-registry']['data_bag'], node.chef_environment)
-  
-  if node['roles'].include?('docker-registry_load_balancer') and node['docker-registry']['ssl']
+
+  if node['docker-registry']['load_balancer'] and node['docker-registry']['ssl']
     if secrets["ssl_certificate"] and secrets["ssl_certificate_key"]
 
       certificate_path = ::File.join(node['docker-registry']['ssl_path'], "certs", "docker-registry.crt")
