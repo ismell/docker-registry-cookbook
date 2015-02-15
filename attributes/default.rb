@@ -59,8 +59,8 @@ case node['platform']
       default['docker-registry']['packages'] << 'libssl-dev'
       default['docker-registry']['packages'] << 'gcc'
     end
-  when 'centos'
-    default['docker-registry']['packages'] = %w(libevent git libffi)
+  when 'centos','rhel'
+    default['docker-registry']['packages'] = %w(gcc git libevent-devel libffi-devel openssl-devel xz-devel)
   when 'smartos'
     default['docker-registry']['packages'] = %w(libevent scmgit)
 end
