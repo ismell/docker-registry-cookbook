@@ -3,12 +3,12 @@ maintainer        "Raul E Rangel"
 maintainer_email  "Raul.Rangel@Disney.com.com"
 license           "Apache 2.0"
 description       "Installs and configures docker-registry"
-version           "0.0.6"
+version           "0.0.8"
 
 recipe "docker-registry", "Installs the docker-registry and sets up configuration"
 
-# TODO: debian centos redhat amazon scientific oracle fedora 
-%w{ ubuntu smartos }.each do |os|
+# TODO: debian redhat amazon scientific oracle fedora 
+%w{ ubuntu smartos centos }.each do |os|
   supports os
 end
 
